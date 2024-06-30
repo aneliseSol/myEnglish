@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic PDF+Audio</title>
+    <link rel="stylesheet" href="stylePrimary.css">
+    <!-- files in use: 
+     "stylePrimary.css"
+     "data.js"
+
+      -->
+    <style>
+
+
+    </style>
+     
+     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chapterMenu = document.querySelector('.chapter-menu');
+            const mainContent = document.querySelector('.main-content');
+            const audioList = document.querySelector('.audio-list');
+            let currentlyPlayingAudio = null;
+
+            const pdfFiles = Array.from({ length: 30 }, (_, i) => `./Chapterspdf/Chapter_${i + 1}.pdf`);
+            const audioFiles = [
+                { chapter: 'Chapter 1', audios: Array.from({ length: 8 }, (_, i) => `audio${i + 1}.mp3`) },
+                { chapter: 'Chapter 2', audios: Array.from({ length: 7 }, (_, i) => `audio${i + 9}.mp3`) },
+                { chapter: 'Chapter 3', audios: Array.from({ length: 8 }, (_, i) => `audio${i + 16}.mp3`) },
+                { chapter: 'Chapter 4', audios: Array.from({ length: 6 }, (_, i) => `audio${i + 24}.mp3`) },
+                { chapter: 'Chapter 5', audios: Array.from({ length: 7 }, (_, i) => `audio${i + 30}.mp3`) },
+                { chapter: 'Chapter 6', audios: Array.from({ length: 6 }, (_, i) => `audio${i + 37}.mp3`) },
+                { chapter: 'Chapter 7', audios: Array.from({ length: 5 }, (_, i) => `audio${i + 43}.mp3`) },
+                { chapter: 'Chapter 8', audios: Array.from({ length: 7 }, (_, i) => `audio${i + 48}.mp3`) },
+                { chapter: 'Chapter 9', audios: Array.from({ length: 8 }, (_, i) => `audio${i + 55}.mp3`) },
+                { chapter: 'Chapter 10', audios: Array.from({ length: 6 }, (_, i) => `audio${i + 63}.mp3`) },
+                { chapter: 'Chapter 11', audios: Array.from({ length: 6 }, (_, i) => `audio${i + 69}.mp3`) },
+                { chapter: 'Chapter 12', audios: Array.from({ length: 7 }, (_, i) => `audio${i + 75}.mp3`) },
+            
+
+
+
+                // Add more chapters as needed
+            ];
+
+            function updateMainContent(pdfFile) {
+                mainContent.innerHTML = `<iframe src="${pdfFile}"></iframe>`;
+            }
+
+            function updateAudioList(chapterIndex) {
+                const { audios } = audioFiles[chapterIndex];
+                const audioItems = audios.map(audio => `
+                    <button class="audio-button" onclick="playAudio('Audios/${audio}')">${audio}</button>
+                `).join('');
+                audioList.innerHTML = `
+                    <button class="stop-audio-button" onclick="stopAudio()">Stop Audio</button>
+                    ${audioItems}
+                `;
+            }
+
+            window.playAudio = function(audioPath) {
+                if (currentlyPlayingAudio) {
+                    currentlyPlayingAudio.pause();
+                }
+                currentlyPlayingAudio = new Audio(audioPath);
+                currentlyPlayingAudio.play();
+            }
+
+            window.stopAudio = function() {
+                if (currentlyPlayingAudio) {
+                    currentlyPlayingAudio.pause();
+                    currentlyPlayingAudio = null;
+                }
+            }
+
+            for (let i = 1; i <= 30; i++) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#chapter${i}`;
+                a.textContent = `Chapter ${i}`;
+                a.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    updateMainContent(pdfFiles[i - 1]);
+                    updateAudioList(i - 1);
+                    stopAudio();
+                });
+                li.appendChild(a);
+                chapterMenu.appendChild(li);
+            }
+
+            document.querySelectorAll('.menu-option').forEach(menu => {
+                menu.addEventListener('click', e => {
+                    e.preventDefault();
+                    if (currentlyPlayingAudio) {
+                        currentlyPlayingAudio.pause();
+                        currentlyPlayingAudio = null;
+                    }
+
+
+             // Clear the audio list
+                     audioList.innerHTML = '';
+
+              // Get href value
+                    const hrefLink = e.target.href;
+                    const hrefArr = hrefLink.split('/');
+                    const hrefValue = hrefArr[hrefArr.length - 1];
+
+                    content.innerHTML = contentHTML[hrefValue];
+                });
+            });            
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <nav class="main-menu">
+            <ul>
+                <li><a href="home" class="menu-option">Home</a></li>
+                <li><a href="about" class="menu-option">About</a></li>
+                <li><a href="chapters" class="menu-option">Chapters</a></li>
+                <li><a href="exercise" class="menu-option">Exercises</a></li>
+                <li><a href="contact" class="menu-option">Contact</a></li>
+            </ul>
+        </nav>
+        <p>Please select a chapter to view its content.</p>
+        <div class="chapter-menu-container">
+            <ul class="chapter-menu">
+                <!-- Chapter links will be generated here -->
+            </ul>
+        </div>
+    </header>
+
+    <div class="audio-list">
+      
+        <!-- Audio links will be generated here -->
+    </div>
+
+    <main class="main-content">
+        <h1> Start your English learning ASAP!</h1>
+        <p>PDF chapter will display here after you selected your chapter.</p>
+        <p>Have fun!</p>
+        <img src="https://picsum.photos/1100/1100?random=${Math.random()}" alt="Random Image" style="width: 100%; height: 150vh;">
+    </main>
+
+    <script src="data.js" charset="UTF-8"></script>
+    <script>
+
+    </script>
+</body>
+</html>
